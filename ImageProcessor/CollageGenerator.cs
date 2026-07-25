@@ -49,7 +49,7 @@ namespace Jellyfin.Plugin.CollectionImageGenerator.ImageProcessor
                 
                 using var outputImage = new Image<Rgba32>(targetWidth, targetHeight);
                 
-                // Black background only used as a safety net.
+                // Black background is used for empty grid cells.
                 outputImage.Mutate(x => x.BackgroundColor(Color.Black));
 
                 var positions = GetCustomPositions(imageCount, targetWidth, targetHeight, padding);
@@ -74,7 +74,7 @@ namespace Jellyfin.Plugin.CollectionImageGenerator.ImageProcessor
                         posterImage.Mutate(x => x.Resize(new ResizeOptions
                         {
                             Size = new Size(gridWidth, gridHeight),
-                            Mode = ResizeMode.Pad,
+                            Mode = ResizeMode.Crop,
                             Position = AnchorPositionMode.Center,
                         }));
                         
@@ -466,7 +466,7 @@ namespace Jellyfin.Plugin.CollectionImageGenerator.ImageProcessor
             var positions = new List<(int X, int Y, int Width, int Height)>();
 
             AddStandardRow(positions, 0, 0, 3, width, height, padding);
-            AddCenteredRow(positions, 1, 2, width, height, padding, canvasWidth);
+            AddCenteredRow(positions, 1, 2, width, height, padding);
             AddStandardRow(positions, 2, 0, 3, width, height, padding);
 
             return positions;
