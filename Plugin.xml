@@ -2,11 +2,9 @@
 <Plugin xmlns="http://schemas.mediabrowser.tv/metadata">
   <Name>Collection Image Generator</Name>
   <Description>Automatically generates collage images for collections without images</Description>
-  <Id>CollectionImageGenerator</Id>
+  <Id>d8ec18f4-688d-4eb5-831d-75a98c2347a8</Id>
   <Version>1.0.0.0</Version>
-  <TargetAbi>10.8.0.0</TargetAbi>
-  <Owner>jellyfin-collection-image-generator</Owner>
-  <Category>Metadata</Category>
-  <RequiredVersion>10.8.0</RequiredVersion>
-  <Assembly>Jellyfin.Plugin.CollectionImageGenerator.dll</Assembly>
+  <TargetAbi>10.10.0.0</TargetAbi>
+  <Owner>Kuroe29</Owner>
+  <Category>General</Category>
 </Plugin>
