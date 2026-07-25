@@ -45,13 +45,13 @@ namespace Jellyfin.Plugin.CollectionImageGenerator.ImageProcessor
 
                 const int targetWidth = 1000;
                 const int targetHeight = 1500;
-                const int padding = 20;
-
+                const int padding = 0;
+                
                 using var outputImage = new Image<Rgba32>(targetWidth, targetHeight);
-
-                var backgroundColor = await GetDynamicBackgroundColorAsync(imagePaths, cancellationToken).ConfigureAwait(false);
-
-                outputImage.Mutate(x => x.BackgroundColor(backgroundColor));
+                
+                // White background only used as a safety net.
+                // It will never be visible because the posters fill the whole image.
+                outputImage.Mutate(x => x.BackgroundColor(Color.White));
 
                 var positions = GetCustomPositions(imageCount, targetWidth, targetHeight, padding);
 
@@ -69,31 +69,20 @@ namespace Jellyfin.Plugin.CollectionImageGenerator.ImageProcessor
                     {
                         using var posterImage = await Image.LoadAsync<Rgba32>(imagePath, cancellationToken).ConfigureAwait(false);
 
-                        var gridWidth = position.Width - (padding * 2);
-                        var gridHeight = position.Height - (padding * 2);
+                        var gridWidth = position.Width;
+                        var gridHeight = position.Height;
 
                         posterImage.Mutate(x => x.Resize(new ResizeOptions
                         {
                             Size = new Size(gridWidth, gridHeight),
-                            Mode = ResizeMode.Max,
+                            Mode = ResizeMode.Crop,
                             Position = AnchorPositionMode.Center,
                         }));
-
-                        var centeredX = position.X + padding + ((gridWidth - posterImage.Width) / 2);
-                        var centeredY = position.Y + padding + ((gridHeight - posterImage.Height) / 2);
-                        var posX = centeredX;
-                        var posY = centeredY;
+                        
+                        var posX = position.X;
+                        var posY = position.Y;
 
                         outputImage.Mutate(ctx => ctx.DrawImage(posterImage, new Point(posX, posY), 1f));
-
-                        var borderColor = GetBorderColor(backgroundColor);
-                        var borderThickness = 6f;
-                        var borderRect = new RectangleF(
-                            posX - (borderThickness / 2),
-                            posY - (borderThickness / 2),
-                            posterImage.Width + borderThickness,
-                            posterImage.Height + borderThickness);
-                        outputImage.Mutate(ctx => ctx.Draw(borderColor, borderThickness, borderRect));
                     }
                     catch (Exception ex)
                     {
@@ -495,48 +484,6 @@ namespace Jellyfin.Plugin.CollectionImageGenerator.ImageProcessor
             }
 
             return positions;
-        }
-
-        [ExcludeFromCodeCoverage]
-        private async Task<Color> GetDynamicBackgroundColorAsync(List<string> imagePaths, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var allColors = new List<Rgba32>();
-                var pixelSampleRate = imagePaths.Count > 6 ? 6 : 3;
-
-                foreach (var imagePath in imagePaths)
-                {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        break;
-                    }
-
-                    try
-                    {
-                        using var image = await Image.LoadAsync<Rgba32>(imagePath, cancellationToken).ConfigureAwait(false);
-                        var sampledColors = SampleImageColors(image, pixelSampleRate);
-                        allColors.AddRange(sampledColors);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "Error sampling colors from image {Path}", imagePath);
-                    }
-                }
-
-                if (allColors.Count == 0)
-                {
-                    return Color.FromRgb(45, 45, 45);
-                }
-
-                var clusters = PerformKMeansClustering(allColors, k: 4);
-                return SelectBackgroundColor(clusters);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error extracting dynamic background color");
-                return Color.FromRgb(45, 45, 45);
-            }
         }
 
         /// <summary>
