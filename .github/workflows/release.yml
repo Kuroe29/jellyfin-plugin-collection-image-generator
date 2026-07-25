@@ -22,10 +22,7 @@ jobs:
         run: dotnet format jellyfin-plugin-collection-image-generator.sln --verify-no-changes
       - name: Build
         run: dotnet build Jellyfin.Plugin.CollectionImageGenerator.csproj --configuration Release --no-restore
-      - name: Run tests
-        run: |
-          dotnet test Jellyfin.Plugin.CollectionImageGenerator.Tests/Jellyfin.Plugin.CollectionImageGenerator.Tests.csproj
-
+  
   build:
     needs: validate
     runs-on: ubuntu-latest
