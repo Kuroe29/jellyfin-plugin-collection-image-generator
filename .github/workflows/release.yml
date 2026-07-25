@@ -73,7 +73,7 @@ jobs:
       id: calculate_checksum
       run: |
         VERSION=${{ steps.get_version.outputs.VERSION }}
-        CHECKSUM=$(sha256sum collection-image-generator-${VERSION}.zip | awk '{ print $1 }')
+        CHECKSUM=$(md5sum collection-image-generator-${VERSION}.zip | awk '{ print $1 }')
         echo "CHECKSUM=$CHECKSUM" >> $GITHUB_OUTPUT
 
     - name: Generate manifest.json
