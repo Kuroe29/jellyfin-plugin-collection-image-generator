@@ -104,18 +104,18 @@ jobs:
         cat > manifest.json << EOF
         [
           {
-            "guid": "e29b0e3d-f15e-47b9-9b3d-ed3df892e33d",
+            "guid": "d8ec18f4-688d-4eb5-831d-75a98c2347a8",
             "name": "Collection Image Generator",
             "overview": "Automatically generates collage images for collections without images",
             "description": "A Jellyfin plugin that automatically generates collage images for collections without images.",
-            "owner": "johnpc",
+            "owner": "Kuroe29",
             "category": "Metadata",
             "versions": [
               {
                 "version": "${VERSION}",
-                "changelog": "See the full changelog at [GitHub](https://github.com/johnpc/jellyfin-plugin-collection-image-generator/releases/tag/${VERSION})",
+                "changelog": "See the full changelog at [GitHub](https://github.com/Kuroe29/jellyfin-plugin-collection-image-generator/releases/tag/${VERSION})",
                 "targetAbi": "10.11.0.0",
-                "sourceUrl": "https://github.com/johnpc/jellyfin-plugin-collection-image-generator/releases/download/${VERSION}/collection-image-generator-${VERSION}.zip",
+                "sourceUrl": "https://github.com/Kuroe29/jellyfin-plugin-collection-image-generator/releases/download/${VERSION}/collection-image-generator-${VERSION}.zip",
                 "checksum": "${CHECKSUM}",
                 "timestamp": "${TIMESTAMP}"
               }
