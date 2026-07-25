@@ -49,13 +49,12 @@ namespace Jellyfin.Plugin.CollectionImageGenerator.ImageProcessor
                 
                 using var outputImage = new Image<Rgba32>(targetWidth, targetHeight);
                 
-                // White background only used as a safety net.
-                // It will never be visible because the posters fill the whole image.
-                outputImage.Mutate(x => x.BackgroundColor(Color.White));
+                // Black background only used as a safety net.
+                outputImage.Mutate(x => x.BackgroundColor(Color.Black));
 
                 var positions = GetCustomPositions(imageCount, targetWidth, targetHeight, padding);
 
-                for (var i = 0; i < imageCount; i++)
+                for (var i = 0; i < Math.Min(imageCount, positions.Count); i++)
                 {
                     if (cancellationToken.IsCancellationRequested)
                     {
@@ -75,7 +74,7 @@ namespace Jellyfin.Plugin.CollectionImageGenerator.ImageProcessor
                         posterImage.Mutate(x => x.Resize(new ResizeOptions
                         {
                             Size = new Size(gridWidth, gridHeight),
-                            Mode = ResizeMode.Crop,
+                            Mode = ResizeMode.Pad,
                             Position = AnchorPositionMode.Center,
                         }));
                         
@@ -90,8 +89,12 @@ namespace Jellyfin.Plugin.CollectionImageGenerator.ImageProcessor
                     }
                 }
 
-                var outputDir = Path.GetDirectoryName(outputPath) ?? string.Empty;
-                Directory.CreateDirectory(outputDir);
+                var outputDir = Path.GetDirectoryName(outputPath);
+
+                if (!string.IsNullOrEmpty(outputDir))
+                {
+                    Directory.CreateDirectory(outputDir);
+                }
 
                 await outputImage.SaveAsJpegAsync(outputPath, cancellationToken).ConfigureAwait(false);
 
@@ -100,6 +103,7 @@ namespace Jellyfin.Plugin.CollectionImageGenerator.ImageProcessor
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error generating collage");
+                throw;
             }
         }
 
@@ -353,8 +357,7 @@ namespace Jellyfin.Plugin.CollectionImageGenerator.ImageProcessor
             int itemCount,
             int cellWidth,
             int cellHeight,
-            int padding,
-            int canvasWidth)
+            int padding)
         {
             var rowY = padding + (rowIndex * (cellHeight + padding));
             var centerOffset = (cellWidth + padding) / 2;
@@ -416,13 +419,13 @@ namespace Jellyfin.Plugin.CollectionImageGenerator.ImageProcessor
             var (width, height) = Get3x3CellSize(canvasWidth, canvasHeight, padding);
             var positions = new List<(int X, int Y, int Width, int Height)>();
 
-            AddCenteredRow(positions, 0, 2, width, height, padding, canvasWidth);
+            AddCenteredRow(positions, 0, 2, width, height, padding);
 
             var centerX = (canvasWidth - width) / 2;
             var middleY = (padding * 2) + height;
             positions.Add((centerX, middleY, width, height));
 
-            AddCenteredRow(positions, 2, 2, width, height, padding, canvasWidth);
+            AddCenteredRow(positions, 2, 2, width, height, padding);
 
             return positions;
         }
@@ -432,7 +435,7 @@ namespace Jellyfin.Plugin.CollectionImageGenerator.ImageProcessor
             var (width, height) = Get3x3CellSize(canvasWidth, canvasHeight, padding);
             var positions = new List<(int X, int Y, int Width, int Height)>();
 
-            AddCenteredRow(positions, 0, 2, width, height, padding, canvasWidth);
+            AddCenteredRow(positions, 0, 2, width, height, padding);
 
             var middleRowSpacing = (int)(width * 0.4f);
             var middleStartX = (canvasWidth - ((width * 2) + middleRowSpacing)) / 2;
@@ -440,7 +443,7 @@ namespace Jellyfin.Plugin.CollectionImageGenerator.ImageProcessor
             positions.Add((middleStartX, middleY, width, height));
             positions.Add((middleStartX + width + middleRowSpacing, middleY, width, height));
 
-            AddCenteredRow(positions, 2, 2, width, height, padding, canvasWidth);
+            AddCenteredRow(positions, 2, 2, width, height, padding);
 
             return positions;
         }
@@ -450,9 +453,9 @@ namespace Jellyfin.Plugin.CollectionImageGenerator.ImageProcessor
             var (width, height) = Get3x3CellSize(canvasWidth, canvasHeight, padding);
             var positions = new List<(int X, int Y, int Width, int Height)>();
 
-            AddCenteredRow(positions, 0, 2, width, height, padding, canvasWidth);
+            AddCenteredRow(positions, 0, 2, width, height, padding);
             AddStandardRow(positions, 1, 0, 3, width, height, padding);
-            AddCenteredRow(positions, 2, 2, width, height, padding, canvasWidth);
+            AddCenteredRow(positions, 2, 2, width, height, padding);
 
             return positions;
         }
