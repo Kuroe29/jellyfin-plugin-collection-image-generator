@@ -1,20 +1,15 @@
-[
-  {
-    "guid": "e29b0e3d-f15e-47b9-9b3d-ed3df892e33d",
-    "name": "Collection Image Generator",
-    "overview": "Automatically generates collage images for collections without images",
-    "description": "A Jellyfin plugin that automatically generates collage images for collections without images.",
-    "owner": "johnpc",
-    "category": "Metadata",
-    "versions": [
-      {
-        "version": "0.0.0.31",
-        "changelog": "See the full changelog at [GitHub](https://github.com/johnpc/jellyfin-plugin-collection-image-generator/releases/tag/0.0.0.31)",
-        "targetAbi": "10.11.0.0",
-        "sourceUrl": "https://github.com/johnpc/jellyfin-plugin-collection-image-generator/releases/download/0.0.0.31/collection-image-generator-0.0.0.31.zip",
-        "checksum": "9ffbd871976e1cc794ff2489ca2bfde0",
-        "timestamp": "2026-06-15T13:33:10Z"
-      }
-    ]
-  }
-]
+{
+  "guid": "d8ec18f4-688d-4eb5-831d-75a98c2347a8",
+  "name": "Collection Image Generator",
+  "overview": "Generate collection images from posters.",
+  "owner": "Kuroe29",
+  "category": "General",
+  "versions": [
+    {
+      "version": "1.0.0",
+      "targetAbi": "10.10.0.0",
+      "sourceUrl": "https://github.com/Kuroe29/jellyfin-plugin-collection-image-generator/releases/download/v1.0.0/Jellyfin.Plugin.CollectionImageGenerator.zip",
+      "checksum": "HASH_SHA256"
+    }
+  ]
+}
