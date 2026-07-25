@@ -46,9 +46,9 @@ namespace Jellyfin.Plugin.CollectionImageGenerator.ImageProcessor
                 const int targetWidth = 1000;
                 const int targetHeight = 1500;
                 const int padding = 0;
-                
+
                 using var outputImage = new Image<Rgba32>(targetWidth, targetHeight);
-                
+
                 // Black background is used for empty grid cells.
                 outputImage.Mutate(x => x.BackgroundColor(Color.Black));
 
@@ -77,7 +77,7 @@ namespace Jellyfin.Plugin.CollectionImageGenerator.ImageProcessor
                             Mode = ResizeMode.Crop,
                             Position = AnchorPositionMode.Center,
                         }));
-                        
+
                         var posX = position.X;
                         var posY = position.Y;
 
