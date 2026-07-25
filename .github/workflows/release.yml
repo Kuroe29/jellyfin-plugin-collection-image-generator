@@ -144,11 +144,3 @@ jobs:
         prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Update manifest on main
-      run: |
-        git fetch origin main
-        git checkout main
-        git add manifest.json
-        git commit -m "chore: update manifest for ${{ steps.get_version.outputs.VERSION }}" || true
-        git push origin main
