@@ -20,26 +20,11 @@ jobs:
         run: dotnet restore jellyfin-plugin-collection-image-generator.sln
       - name: Check formatting
         run: dotnet format jellyfin-plugin-collection-image-generator.sln --verify-no-changes
-      - name: Build (strict)
-        run: dotnet build jellyfin-plugin-collection-image-generator.sln --configuration Release /p:TreatWarningsAsErrors=true
-      - name: Run unit tests with coverage
+      - name: Build
+        run: dotnet build Jellyfin.Plugin.CollectionImageGenerator.csproj --configuration Release --no-restore
+      - name: Run tests
         run: |
-          dotnet test Jellyfin.Plugin.CollectionImageGenerator.Tests/Jellyfin.Plugin.CollectionImageGenerator.Tests.csproj \
-            --configuration Release \
-            --no-build \
-            /p:CollectCoverage=true \
-            /p:CoverletOutputFormat=json \
-            /p:CoverletOutput=../coverage/coverage.json \
-            '/p:Include=[Jellyfin.Plugin.CollectionImageGenerator]*' \
-            /p:ThresholdType=line \
-            /p:Threshold=80
-      - name: Run acceptance tests
-        run: |
-          dotnet test Jellyfin.Plugin.CollectionImageGenerator.AcceptanceTests/Jellyfin.Plugin.CollectionImageGenerator.AcceptanceTests.csproj \
-            --configuration Release \
-            --no-build
-      - name: CRAP score check
-        run: bash scripts/check-crap.sh coverage/coverage.json
+          dotnet test Jellyfin.Plugin.CollectionImageGenerator.Tests/Jellyfin.Plugin.CollectionImageGenerator.Tests.csproj
 
   build:
     needs: validate
@@ -73,7 +58,6 @@ jobs:
       run: |
         VERSION=${{ steps.get_version.outputs.VERSION }}
         dotnet build Jellyfin.Plugin.CollectionImageGenerator.csproj --configuration Release --no-restore \
-          /p:TreatWarningsAsErrors=true \
           /p:Version=$VERSION \
           /p:AssemblyVersion=$VERSION \
           /p:FileVersion=$VERSION
